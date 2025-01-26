@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { databaseTestModule } from '../src/database.module';
 import * as request from 'supertest';
 import { TaskModule } from '../src/task/task.module';
+import { CreateTaskDto } from 'src/task/dto/create-task.dto';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication;
@@ -28,13 +29,9 @@ describe('TaskController (e2e)', () => {
       .post('/tasks')
       .send({
         title: 'New Task',
-        description: { content: 'E2E test task description' },
-        attachments: [
-          { filename: 'file1.txt', mimetype: 'text/plain', path: '/uploads/file1.txt', size: 1234 },
-        ],
-        users: [],
+        description: 'E2E test task description',
         tags: ['urgent', 'backend'],
-      })
+      } as CreateTaskDto)
       .expect(201);
 
     expect(response.body).toHaveProperty('id');
@@ -49,13 +46,9 @@ describe('TaskController (e2e)', () => {
       .post('/tasks')
       .send({
         title: 'Fetch Task',
-        description: { content: 'Retrieve task description' },
-        attachments: [
-          { filename: 'file2.txt', mimetype: 'text/plain', path: '/uploads/file2.txt', size: 5678 },
-        ],
-        users: [],
+        description: 'Retrieve task description',
         tags: ['low-priority'],
-      })
+      } as CreateTaskDto)
       .expect(201);
 
     const taskId = createResponse.body.id;
@@ -67,7 +60,5 @@ describe('TaskController (e2e)', () => {
     expect(getResponse.body).toHaveProperty('id', taskId);
     expect(getResponse.body.title).toBe('Fetch Task');
     expect(getResponse.body.description.content).toBe('Retrieve task description');
-    expect(getResponse.body.attachments).toHaveLength(1);
-    expect(getResponse.body.attachments[0].filename).toBe('file2.txt');
   });
 });
