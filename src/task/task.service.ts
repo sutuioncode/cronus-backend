@@ -12,7 +12,7 @@ export class TaskService {
     private readonly repository: Repository<Task>,
   ) { }
   create({ description, tags, title }: CreateTaskDto) {
-    return this.repository.create({
+    return this.repository.save({
       title, description: { content: description }, tags
     })
   }

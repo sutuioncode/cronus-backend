@@ -23,15 +23,19 @@ describe('TaskService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a task', () => {
+  it('should create a task',async () => {
     const task: CreateTaskDto = {
       description: 'Basic task description',
       title: 'simple task',
       tags: ['task', 'bigTask'],
     }
 
-    const response = service.create(task)
+    const response = await service.create(task)
 
+    expect(response).toHaveProperty('id')
+    expect(response).toHaveProperty('isCompleted', false)
+    expect(response).toHaveProperty('createdAt')
+    expect(response).toHaveProperty('updatedAt')
     expect(response).toHaveProperty('title', task.title)
     expect(response).toHaveProperty('description.content', task.description)
     expect(response).toHaveProperty('tags', task.tags)
