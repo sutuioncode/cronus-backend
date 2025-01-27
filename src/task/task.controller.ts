@@ -5,9 +5,9 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('tasks')
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(private readonly taskService: TaskService) { }
 
-  @Post()
+  @Post('create')
   create(@Body() createTaskDto: CreateTaskDto) {
     return this.taskService.create(createTaskDto);
   }
@@ -19,8 +19,7 @@ export class TaskController {
 
   @Get(':id')
   findOne(@Param() params: any) {
-    const {id} = params;
-    console.log('findOne',{id, params});
+    const { id } = params;
     return this.taskService.findOne(+id);
   }
 

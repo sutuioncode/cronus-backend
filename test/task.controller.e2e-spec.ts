@@ -4,6 +4,7 @@ import { CreateTaskDto } from 'src/task/dto/create-task.dto';
 import * as request from 'supertest';
 import { databaseTestModule } from '../src/database.module';
 import { TaskModule } from '../src/task/task.module';
+import { testTasks } from './tasks';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication;
@@ -25,14 +26,10 @@ describe('TaskController (e2e)', () => {
   });
 
   it('/tasks (POST) should create a task with description and attachments', async () => {
-    const task: CreateTaskDto = {
-      title: 'New Task',
-      description: 'E2E test task description',
-      tags: ['urgent', 'backend'],
-    }
+    const task = testTasks[2]
 
     const response = await request(app.getHttpServer())
-      .post('/tasks')
+      .post('/tasks/create')
       .send(task)
       .expect(201);
 
@@ -42,20 +39,15 @@ describe('TaskController (e2e)', () => {
   });
 
   it('/tasks/:id (GET) should retrieve a task with description and attachments', async () => {
-    const task = {
-      title: 'Fetch Task',
-      description: 'Retrieve task description',
-      tags: ['low-priority'],
-    } as CreateTaskDto
+    const task = testTasks[0]
 
     const createResponse = await request(app.getHttpServer())
-      .post('/tasks')
+      .post('/tasks/create')
       .send(task)
       .expect(201);
 
     const taskId = createResponse.body.id;
 
-    console.log(createResponse.body)
 
     const getResponse = await request(app.getHttpServer())
       .get(`/tasks/${taskId}`)
@@ -66,4 +58,6 @@ describe('TaskController (e2e)', () => {
     expect(getResponse.body.description.content).toBe(task.description);
     expect(getResponse.body.tags).toStrictEqual(task.tags);
   });
+
+
 });
