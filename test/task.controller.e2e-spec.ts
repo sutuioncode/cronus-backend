@@ -42,13 +42,15 @@ describe('TaskController (e2e)', () => {
   });
 
   it('/tasks/:id (GET) should retrieve a task with description and attachments', async () => {
+    const task = {
+      title: 'Fetch Task',
+      description: 'Retrieve task description',
+      tags: ['low-priority'],
+    } as CreateTaskDto
+    
     const createResponse = await request(app.getHttpServer())
       .post('/tasks')
-      .send({
-        title: 'Fetch Task',
-        description: 'Retrieve task description',
-        tags: ['low-priority'],
-      } as CreateTaskDto)
+      .send(task)
       .expect(201);
 
     const taskId = createResponse.body.id;
@@ -58,7 +60,8 @@ describe('TaskController (e2e)', () => {
       .expect(200);
 
     expect(getResponse.body).toHaveProperty('id', taskId);
-    expect(getResponse.body.title).toBe('Fetch Task');
-    expect(getResponse.body.description.content).toBe('Retrieve task description');
+    expect(getResponse.body.title).toBe(task.title);
+    expect(getResponse.body.description.content).toBe(task.description);
+    expect(getResponse.body.tags).toStrictEqual(task.tags);
   });
 });
