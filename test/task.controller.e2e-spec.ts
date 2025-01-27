@@ -59,5 +59,24 @@ describe('TaskController (e2e)', () => {
     expect(getResponse.body.tags).toStrictEqual(task.tags);
   });
 
+  it('/tasks/list (GET) should retrieve a list of  tasks with description and attachments', async () => {
+
+    for (const task of testTasks) {
+      await request(app.getHttpServer())
+        .post('/tasks/create')
+        .send(task)
+        .expect(201);
+    }
+
+
+    const getResponse = await request(app.getHttpServer())
+      .get(`/tasks/list`)
+      .expect(200);
+
+    expect(getResponse.body.length).toEqual(testTasks.length)
+
+    expect(getResponse.body).toStrictEqual(testTasks)
+  });
+
 
 });
