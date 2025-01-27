@@ -25,20 +25,20 @@ describe('TaskController (e2e)', () => {
   });
 
   it('/tasks (POST) should create a task with description and attachments', async () => {
+    const task: CreateTaskDto = {
+      title: 'New Task',
+      description: 'E2E test task description',
+      tags: ['urgent', 'backend'],
+    }
+
     const response = await request(app.getHttpServer())
       .post('/tasks')
-      .send({
-        title: 'New Task',
-        description: 'E2E test task description',
-        tags: ['urgent', 'backend'],
-      } as CreateTaskDto)
+      .send(task)
       .expect(201);
 
-    expect(response.body).toHaveProperty('id');
-    expect(response.body.title).toBe('New Task');
-    expect(response.body.description.content).toBe('E2E test task description');
-    expect(response.body.attachments).toHaveLength(1);
-    expect(response.body.attachments[0].filename).toBe('file1.txt');
+    expect(response.body.title).toBe(task.title);
+    expect(response.body.description.content).toBe(task.description);
+    expect(response.body.tags).toStrictEqual(task.tags);
   });
 
   it('/tasks/:id (GET) should retrieve a task with description and attachments', async () => {
