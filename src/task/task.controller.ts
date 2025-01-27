@@ -18,7 +18,9 @@ export class TaskController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() params: any) {
+    const {id} = params;
+    console.log('findOne',{id, params});
     return this.taskService.findOne(+id);
   }
 

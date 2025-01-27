@@ -25,6 +25,9 @@ export class TaskService {
     return this.repository.findOne({
       where: {
         id
+      },
+      relations: {
+        description: true
       }
     })
   }

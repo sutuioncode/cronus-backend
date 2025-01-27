@@ -1,10 +1,10 @@
-import { databaseTestModule } from '../../src/database.module';
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskService } from './task.service';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { TaskRepository } from './repositories/task-reposotory';
-import { Task } from './entities/task.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { databaseTestModule } from '../../src/database.module';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { Task } from './entities/task.entity';
+import { TaskRepository } from './repositories/task-reposotory';
+import { TaskService } from './task.service';
 
 
 describe('TaskService', () => {
@@ -23,7 +23,7 @@ describe('TaskService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a task',async () => {
+  it('should create a task', async () => {
     const task: CreateTaskDto = {
       description: 'Basic task description',
       title: 'simple task',
@@ -31,6 +31,25 @@ describe('TaskService', () => {
     }
 
     const response = await service.create(task)
+
+    expect(response).toHaveProperty('id')
+    expect(response).toHaveProperty('isCompleted', false)
+    expect(response).toHaveProperty('createdAt')
+    expect(response).toHaveProperty('updatedAt')
+    expect(response).toHaveProperty('title', task.title)
+    expect(response).toHaveProperty('description.content', task.description)
+    expect(response).toHaveProperty('tags', task.tags)
+  })
+
+  it('should return a task by ID', async () => {
+    const task: CreateTaskDto = {
+      description: 'Basic task description',
+      title: 'simple task',
+      tags: ['task', 'bigTask'],
+    }
+
+    const { id } = await service.create(task)
+    const response = await service.findOne(id)
 
     expect(response).toHaveProperty('id')
     expect(response).toHaveProperty('isCompleted', false)

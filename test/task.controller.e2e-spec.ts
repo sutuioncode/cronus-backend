@@ -1,9 +1,9 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { databaseTestModule } from '../src/database.module';
-import * as request from 'supertest';
-import { TaskModule } from '../src/task/task.module';
 import { CreateTaskDto } from 'src/task/dto/create-task.dto';
+import * as request from 'supertest';
+import { databaseTestModule } from '../src/database.module';
+import { TaskModule } from '../src/task/task.module';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication;
@@ -47,13 +47,15 @@ describe('TaskController (e2e)', () => {
       description: 'Retrieve task description',
       tags: ['low-priority'],
     } as CreateTaskDto
-    
+
     const createResponse = await request(app.getHttpServer())
       .post('/tasks')
       .send(task)
       .expect(201);
 
     const taskId = createResponse.body.id;
+
+    console.log(createResponse.body)
 
     const getResponse = await request(app.getHttpServer())
       .get(`/tasks/${taskId}`)
