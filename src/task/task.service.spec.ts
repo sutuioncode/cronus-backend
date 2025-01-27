@@ -5,6 +5,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { Task } from './entities/task.entity';
 import { TaskRepository } from './repositories/task-reposotory';
 import { TaskService } from './task.service';
+import { testTasks } from '../../test/tasks';
 
 
 describe('TaskService', () => {
@@ -24,11 +25,7 @@ describe('TaskService', () => {
   });
 
   it('should create a task', async () => {
-    const task: CreateTaskDto = {
-      description: 'Basic task description',
-      title: 'simple task',
-      tags: ['task', 'bigTask'],
-    }
+    const task = testTasks[3]
 
     const response = await service.create(task)
 
@@ -42,11 +39,7 @@ describe('TaskService', () => {
   })
 
   it('should return a task by ID', async () => {
-    const task: CreateTaskDto = {
-      description: 'Basic task description',
-      title: 'simple task',
-      tags: ['task', 'bigTask'],
-    }
+    const task = testTasks[0]
 
     const { id } = await service.create(task)
     const response = await service.findOne(id)
