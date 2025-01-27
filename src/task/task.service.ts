@@ -11,8 +11,10 @@ export class TaskService {
     @InjectRepository(Task)
     private readonly repository: Repository<Task>,
   ) { }
-    create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+  create({ description, tags, title }: CreateTaskDto) {
+    return this.repository.create({
+      title, description: { content: description }, tags
+    })
   }
 
   findAll() {
