@@ -52,4 +52,17 @@ describe('TaskService', () => {
     expect(response).toHaveProperty('description.content', task.description)
     expect(response).toHaveProperty('tags', task.tags)
   })
+
+  it('should retrieve a task with description and attachments', async () => {
+
+    for (const task of testTasks) {
+      await service.create(task)
+    }
+
+    const tasks = await service.findAll()
+
+    expect(tasks.length).toEqual(testTasks.length)
+
+    expect(testTasks).toStrictEqual(tasks.map(({ title, tags, description: { content } }) => ({ title, tags, description: content })))
+  });
 });

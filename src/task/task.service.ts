@@ -18,7 +18,14 @@ export class TaskService {
   }
 
   findAll() {
-    return `This action returns all task`;
+    return this.repository.find({
+      relations: {
+        description: true
+      },
+      order: {
+        createdAt: 'DESC'
+      }
+    })
   }
 
   findOne(id: number) {

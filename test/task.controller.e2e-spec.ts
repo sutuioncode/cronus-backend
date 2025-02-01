@@ -5,9 +5,13 @@ import * as request from 'supertest';
 import { databaseTestModule } from '../src/database.module';
 import { TaskModule } from '../src/task/task.module';
 import { testTasks } from './tasks';
+import { Repository } from 'typeorm';
+import { Task } from '../src/task/entities/task.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication;
+  let taskRepository: Repository<Task>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,8 +22,13 @@ describe('TaskController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    taskRepository = app.get<Repository<Task>>(getRepositoryToken(Task))
     await app.init();
   });
+
+  afterEach(async () => {
+    await taskRepository.clear()
+  })
 
   afterAll(async () => {
     await app.close();
@@ -75,7 +84,7 @@ describe('TaskController (e2e)', () => {
 
     expect(getResponse.body.length).toEqual(testTasks.length)
 
-    expect(getResponse.body).toStrictEqual(testTasks)
+    expect(getResponse.body).toMatchObject(testTasks)
   });
 
 
