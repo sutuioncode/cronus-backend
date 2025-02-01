@@ -53,7 +53,7 @@ describe('TaskService', () => {
     expect(response).toHaveProperty('tags', task.tags)
   })
 
-  it('should retrieve a task with description and attachments', async () => {
+  it('should retrieve a list of tasks with description and attachments', async () => {
 
     for (const task of testTasks) {
       await service.create(task)

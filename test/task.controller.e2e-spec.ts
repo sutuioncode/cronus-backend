@@ -82,9 +82,9 @@ describe('TaskController (e2e)', () => {
       .get(`/tasks/list`)
       .expect(200);
 
-    expect(getResponse.body.length).toEqual(testTasks.length)
+    expect(getResponse.body?.tasks?.length).toEqual(testTasks.length)
 
-    expect(getResponse.body).toMatchObject(testTasks)
+    expect(getResponse.body).toMatchObject({ tasks: testTasks })
   });
 
 

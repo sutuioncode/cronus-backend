@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { ListTaskItemDto } from './dto/list-tasks.dto';
+import { ListTaskItemDto, ListTasksDto } from './dto/list-tasks.dto';
 
 @Controller('tasks')
 export class TaskController {
@@ -14,9 +14,11 @@ export class TaskController {
   }
 
   @Get('list')
-  findAll(): Promise<ListTaskItemDto[]> {
-    return this.taskService.findAll()
-      .then((list) => list.map(({ tags, title, id, description: { content } }) => ({ tags, title, id, description: content })));
+  async findAll(): Promise<ListTasksDto> {
+    return ({
+      tasks: await this.taskService.findAll()
+        .then((list) => list.map(({ tags, title, id, description: { content } }) => ({ tags, title, id, description: content })))
+    })
   }
 
   @Get(':id')
