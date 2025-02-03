@@ -3,3 +3,8 @@ export class CreateTaskDto {
     description: string;
     tags: string[];
 }
+
+export class CreateTaskResponseDto {
+    task: CreateTaskDto
+}
+
