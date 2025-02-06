@@ -8,6 +8,8 @@ import { Task } from './entities/task.entity';
 import { TaskRepository } from './repositories/task-reposotory';
 import { TaskController } from './task.controller';
 import { TaskService } from './task.service';
+import { GetTaskMappingProfile } from './mapping-profile/get-task.mapping';
+import { automapperModule } from '../../src/automapper.module';
 describe('TaskController', () => {
   let controller: TaskController;
   let app: NestApplication
@@ -15,8 +17,8 @@ describe('TaskController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TaskController],
-      imports: [databaseTestModule, TaskRepository, TypeOrmModule.forFeature([Task])],
-      providers: [TaskService],
+      imports: [databaseTestModule, automapperModule, TaskRepository, TypeOrmModule.forFeature([Task])],
+      providers: [TaskService, GetTaskMappingProfile],
     }).compile();
 
     controller = module.get<TaskController>(TaskController);
@@ -41,11 +43,10 @@ describe('TaskController', () => {
       .send(taskDto)
       .expect(201);
 
-
-    expect(response.body.task).toMatchObject({
-      id: expect.any(Number),
-      ...taskDto
-    });
+    expect(response.body.id).toEqual(expect.any(Number))
+    expect(response.body.title).toEqual(taskDto.title)
+    expect(response.body.description).toEqual(taskDto.description)
+    expect(response.body.tags).toEqual(taskDto.tags)
 
   })
 });

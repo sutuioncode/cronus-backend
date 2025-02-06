@@ -1,16 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { CreateTaskDto, CreateTaskResponseDto } from './dto/create-task.dto';
 import { ListTasksDto } from './dto/list-tasks.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskService } from './task.service';
+import { MapInterceptor } from '@automapper/nestjs';
+import { Task } from './entities/task.entity';
 
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) { }
 
   @Post('create')
-  async create(@Body() createTaskDto: CreateTaskDto) {
-    return { task: await this.taskService.create(createTaskDto) }
+  @UseInterceptors(MapInterceptor(Task, CreateTaskResponseDto))
+  async create(@Body() createTaskDto: any) {
+    return await this.taskService.create(createTaskDto)
   }
 
   @Get('list')
