@@ -8,6 +8,8 @@ import { testTasks } from './tasks';
 import { Repository } from 'typeorm';
 import { Task } from '../src/task/entities/task.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { automapperModule } from '../src/automapper.module';
+import { GetTaskMappingProfile } from '../src/task/mapping-profile/get-task.mapping';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication;
@@ -18,7 +20,8 @@ describe('TaskController (e2e)', () => {
       imports: [
         databaseTestModule,
         TaskModule,
-      ],
+        automapperModule,
+      ],providers:[GetTaskMappingProfile]
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -43,7 +46,7 @@ describe('TaskController (e2e)', () => {
       .expect(201);
 
     expect(response.body.title).toBe(task.title);
-    expect(response.body.description.content).toBe(task.description);
+    expect(response.body.description).toBe(task.description);
     expect(response.body.tags).toStrictEqual(task.tags);
   });
 
@@ -64,7 +67,7 @@ describe('TaskController (e2e)', () => {
 
     expect(getResponse.body).toHaveProperty('id', taskId);
     expect(getResponse.body.title).toBe(task.title);
-    expect(getResponse.body.description.content).toBe(task.description);
+    expect(getResponse.body.description).toBe(task.description);
     expect(getResponse.body.tags).toStrictEqual(task.tags);
   });
 
@@ -82,9 +85,9 @@ describe('TaskController (e2e)', () => {
       .get(`/tasks/list`)
       .expect(200);
 
-    expect(getResponse.body?.tasks?.length).toEqual(testTasks.length)
+    expect(getResponse.body?.length).toEqual(testTasks.length)
 
-    expect(getResponse.body).toMatchObject({ tasks: testTasks })
+    expect(getResponse.body).toMatchObject(testTasks)
   });
 
 

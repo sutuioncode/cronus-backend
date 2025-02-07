@@ -17,14 +17,14 @@ export class TaskController {
   }
 
   @Get('list')
-  async findAll(): Promise<ListTasksDto> {
-    return ({
-      tasks: await this.taskService.findAll()
-        .then((list) => list.map(({ tags, title, id, description: { content } }) => ({ tags, title, id, description: content })))
-    })
+  @UseInterceptors(MapInterceptor(Task, CreateTaskResponseDto, { isArray: true, }))
+  async findAll() {
+    return await this.taskService.findAll()
+    
   }
-
+  
   @Get(':id')
+  @UseInterceptors(MapInterceptor(Task, CreateTaskResponseDto))
   findOne(@Param() params: any) {
     const { id } = params;
     return this.taskService.findOne(+id);
